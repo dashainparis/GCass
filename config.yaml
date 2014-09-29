@@ -1,0 +1,21 @@
+# Config file
+# Commmon for main_clustering.py and probabilities.py
+working_dir : "/Users/dasha/PhD/data/"
+sam_files_dir : "sam_GCAss/"
+results_dir : "result_GCAss/"
+normal_fragments_dir : "normal_fragments/GCAss/"
+chromosomes_file : "chrom.txt"
+fa_files_dir : "chrom_files_hg38/"
+gem_files_dir : "gem_files_hg38/"
+length_histogram_file : "historam_GCAss.txt"
+centromic_file : "centromeric_hg18.txt"
+lambda_file : "lambda_GCAss.txt"
+links_probabilities_file : "links_probabilities.txt"
+serialized_stats_file : "serialized_stats_GCAss.yaml"
+chromosomes : ["chr21"]
+alpha : 0.005
+eps_prob : 0.001
+find_frag : []
+read_length : 50
+ploidy : 3.0
+numb_allel :  8
