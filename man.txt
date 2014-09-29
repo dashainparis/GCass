@@ -1,0 +1,27 @@
+NAME
+
+GC_Assmbly
+
+SYNOPSIS
+
+python main_clustering.py -c config.yaml
+
+CONFIG DESCRIPTION
+
+# Config file
+# Commmon for main_clustering.py and probabilities.py
+working_dir : "/Users/dasha/PhD/data/"   ------ Common directory with all files
+sam_files_dir : "sam_GCAss/"  ---------- directory with sam files (be carefull it takes ALL files in the folder)
+normal_fragments_dir : "normal_fragments/GCAss/"  -------- directory with some info about normal fragments (porbably would be deleted in the sooonest time)
+chromosomes_file : "chrom.txt" ------ file with the header of the sam file
+fa_files_dir : "chrom_files_hg38/"   -------- directory with refernce genome (.fa)
+gem_files_dir : "gem_files_hg38/"   -------- directory with gem files for all chromosomes under process (infomatoion about mappabilty)
+length_histogram_file : "historam_GCAss.txt"  ------- code would write histogram of the insert-sizes to this file
+lambda_file : "lambda_GCAss.txt"   ------ output lambda file
+serialized_stats_file : "serialized_stats_GCAss.yaml"  ----- output info some infor about fragment lenghts (to be deleted)
+alpha : 0.005  ------  Nothing
+eps_prob : 0.001  ------  Nothing
+find_frag : []  ------  Nothing
+read_length : 50  ------  Nothing
+ploidy : 3.0  ------  Nothing
+numb_allel :  8  ------  Nothing

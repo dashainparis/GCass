@@ -99,7 +99,23 @@ def LambdaCalculation(chrom,config,normal_fragments,median):
 		if i[0]%step == 0:
 			if gc_gem_mapp[i[0]/step]!='n':
 				Fgc_Ngc_mapp[gc_gem_mapp[i[0]/step]]['Fgc'] +=1
-	lam_mapp = []
+	lam_mapp = []		
+
+	if 0.7 not in Fgc_Ngc_mapp.keys():
+		Fgc_Ngc_mapp[0.66] = {'Fgc':0,'Ngc':0}
+	if 0.3 not in Fgc_Ngc_mapp.keys():
+		Fgc_Ngc_mapp[0.3] = {'Fgc':0,'Ngc':0}
+	for key in Fgc_Ngc_mapp.keys():
+		if key>0.66:
+			Fgc_Ngc_mapp[0.66]['Fgc']+=Fgc_Ngc_mapp[key]['Fgc']
+			Fgc_Ngc_mapp[0.66]['Ngc']+=Fgc_Ngc_mapp[key]['Ngc']
+			print key, 'delete'
+			del Fgc_Ngc_mapp[key]
+		if key<0.3:
+			Fgc_Ngc_mapp[0.3]['Fgc']+=Fgc_Ngc_mapp[key]['Fgc']
+			Fgc_Ngc_mapp[0.3]['Ngc']+=Fgc_Ngc_mapp[key]['Ngc']
+			print key, 'delete'
+			del Fgc_Ngc_mapp[key]
 	print 'Mappable lambda'
 	print 'rate 	Fgc 	Ngc'
 	for i in Fgc_Ngc_mapp.keys():
@@ -108,6 +124,8 @@ def LambdaCalculation(chrom,config,normal_fragments,median):
 
 	print 'lambda Mappable'
 	print lam_mapp
+	f = open(config['working_dir'] + config['lambda_file'],'w')
+
 	return(lam_mapp)
 
 
