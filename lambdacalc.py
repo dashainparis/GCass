@@ -131,6 +131,8 @@ def LambdaCalculation(chrom,config,normal_fragments,median):
 	logger.info('lambda Mappable')
 	logger.info(lam_mapp)
 	f = open(config['working_dir'] + config['lambda_file'],'w')
+	logger.info(x)
+	logger.info(y)
 	plot(x,y)
 	xlabel('gc-rate')
 	ylabel('Expected number of fragment at the position')
