@@ -7,7 +7,7 @@ import random
 import matplotlib.pyplot as plt
 import fragment
 import utils
-import lambda_damien
+import lambdacalc
 # Parse command line arguments to get config file name
 parser = optparse.OptionParser()
 parser.add_option('-c', '--config', dest='config_file_name', help='Name of configuration file to use')
