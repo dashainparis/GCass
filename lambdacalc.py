@@ -4,7 +4,6 @@ import optparse
 import yaml
 import logging
 from numpy import arange,array,ones,linalg
-from pylab import plot,show
 from pylab import *
 import random
 import matplotlib.pyplot as plt
@@ -14,7 +13,8 @@ parser = optparse.OptionParser()
 parser.add_option('-c', '--config', dest='config_file_name', help='Name of configuration file to use')
 
 (options, args) = parser.parse_args()
-
+def SortLambda(l):
+	return(l[0])
 def LoadChromLine(config, chrom):
 	f = open(config['working_dir'] + config['fa_files_dir'] + chrom + '.fa')
 	chrom_line = ''
@@ -65,18 +65,18 @@ def LambdaCalculation(chrom,config,normal_fragments,median):
 	chrom_line = LoadChromLine(config,chrom)
 	gem_line = LoadGem(config,chrom)
 	normal_fragments.sort()
-	print 'Now for this chromosome ', chrom
-	print 'Uploading process is finished'
+	logger.info('Now for this chromosome ' + chrom)
+	logger.info('Uploading process is finished')
 	for i in xrange(0,len(gem_line)-median,step):
 		if gem_line[i]=='!':
 			gem_val_mapp.append(1)
 		else:
 			gem_val_mapp.append(-1)
-	print 'Finished wth gem'
+	logger.info('Finished wth gem')
 	for i in xrange(0,len(chrom_line)-median,step):
 		gc_rate.append(round((chrom_line[i:i+median].count('g')+chrom_line[i:i+median].count('c'))/float(median),2))
 	gc_gem_mapp = [gc_rate[i]*gem_val_mapp[i] for i in xrange(len(gem_val_mapp)-1)]
-	print 'All windows are counted, now Fgc'
+	logger.info('All windows are counted, now Fgc')
 	for i in xrange(len(gc_gem_mapp)):
 		if gc_gem_mapp[i]<0:
 			gc_gem_mapp[i] = 'n'
@@ -86,16 +86,16 @@ def LambdaCalculation(chrom,config,normal_fragments,median):
 		Fgc_Ngc_mapp[i]['Ngc'] += gc_gem_mapp.count(i)
 	norm_ind=0
 	ind_left=0
-	print 'Biggest normal frag = ',normal_fragments[-1]
-	print 'len chrom_line =',len(chrom_line)
-	print 'lenght gc_gem_mapp = ',len(gc_gem_mapp)
-	print 'lenght gem len mapp = ',len(gem_val_mapp)
+	logger.info('Biggest normal frag = '+ str(normal_fragments[-1]))
+	logger.info('len chrom_line ='+str(len(chrom_line)))
+	logger.info('lenght gc_gem_mapp = '+str(len(gc_gem_mapp)))
+	logger.info('lenght gem len mapp = '+str(len(gem_val_mapp)))
 	for i in normal_fragments:
 		if i[0]>len(gem_line)-median:
 			break
 		ind_left+=1	
 		if ind_left%50000==0:
-			print 'Already processed ',ind_left,' fragments, left ',len(normal_fragments)-ind_left
+			logger.info('Already processed '+str(ind_left)+' fragments, left '+str(len(normal_fragments)-ind_left))
 		if i[0]%step == 0:
 			if gc_gem_mapp[i[0]/step]!='n':
 				Fgc_Ngc_mapp[gc_gem_mapp[i[0]/step]]['Fgc'] +=1
@@ -109,22 +109,35 @@ def LambdaCalculation(chrom,config,normal_fragments,median):
 		if key>0.66:
 			Fgc_Ngc_mapp[0.66]['Fgc']+=Fgc_Ngc_mapp[key]['Fgc']
 			Fgc_Ngc_mapp[0.66]['Ngc']+=Fgc_Ngc_mapp[key]['Ngc']
-			print key, 'delete'
+			logger.info(str(key)+ 'delete')
 			del Fgc_Ngc_mapp[key]
 		if key<0.3:
 			Fgc_Ngc_mapp[0.3]['Fgc']+=Fgc_Ngc_mapp[key]['Fgc']
 			Fgc_Ngc_mapp[0.3]['Ngc']+=Fgc_Ngc_mapp[key]['Ngc']
-			print key, 'delete'
+			logger.info(str(key)+ 'delete')
 			del Fgc_Ngc_mapp[key]
-	print 'Mappable lambda'
-	print 'rate 	Fgc 	Ngc'
+		
+	logger.info('Mappable lambda')
+	logger.info('rate 	Fgc 	Ngc')
 	for i in Fgc_Ngc_mapp.keys():
-		print i,  Fgc_Ngc_mapp[i]['Fgc'], Fgc_Ngc_mapp[i]['Ngc']
+		logger.info(str(i)+' ' + str(Fgc_Ngc_mapp[i]['Fgc'])+' '+str(Fgc_Ngc_mapp[i]['Ngc']))
 		lam_mapp.append([i, float(Fgc_Ngc_mapp[i]['Fgc'])/Fgc_Ngc_mapp[i]['Ngc']])
-
-	print 'lambda Mappable'
-	print lam_mapp
+	lam_mapp.sort(key = SortLambda)
+	x = []
+	y = []
+	for k in lam_mapp:
+		x.append(k[0])
+		y.append(k[1])
+	logger.info('lambda Mappable')
+	logger.info(lam_mapp)
 	f = open(config['working_dir'] + config['lambda_file'],'w')
+	plot(x,y)
+	xlabel('gc-rate')
+	ylabel('Expected number of fragment at the position')
+	title('Estimation of lambda correction')
+	grid(True)
+	savefig(config['working_dir'] +'lambda.png')
+	show()
 
 	return(lam_mapp)
 

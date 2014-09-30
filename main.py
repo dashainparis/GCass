@@ -160,7 +160,7 @@ for data_file in data_files:
 		stats_to_serialize['b'] = float(b)
 		stats_to_serialize['p'] = float(p)
 	histogram_flag+=1
-lambda_gc = lambda_damien.LambdaCalculation(chromosome,config,normal_fragments_all,median)
+lambda_gc = lambdacalc.LambdaCalculation(chromosome,config,normal_fragments_all,median)
 # Serialize stats
 serialized_stats_file = open(config['working_dir'] + config['serialized_stats_file'], 'w')
 serialized_stats_file.write(yaml.dump(stats_to_serialize))
