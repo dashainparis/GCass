@@ -1,5 +1,5 @@
-f = open('/Users/dasha/PhD/data/chrom_files_hg38/chr10.fa','r')
-median = 5000
+f = open('/Users/dasha/Dropbox/GCAss_DB/sample1/ref_seq.fa','r')
+median = 494
 contig = ''
 j=0
 for i in f:
@@ -9,60 +9,31 @@ for i in f:
 	contig+=i[:-1]
 f.close()
 contig = contig.lower()
-print contig[1000000:1000100]
-windows = []
-wind_init = contig[:median-1]
-gc_count_init = wind_init.count('c')+wind_init.count('g')
-gc_pers_init = float(gc_count_init)/len(wind_init)
-ind_init = 0
-summ = 0
-contig = contig[median:]
-k=1000000
-length= len(contig)
-f = open('regions.txt','w')
-print 'gc_pers_init = ',gc_pers_init
-while len(contig)>length*0.95:
-	gc_pers_init = float(gc_count_init)/median
-	summ += len(wind_init)
-	if  summ/k>0:
-		print 'Alredy did ',summ
-		k+=1000000
-	if (wind_init.count('n'))/float(len(wind_init))>=0.5:
-		print 'skip'
-		wind_init = contig[:median]
-		contig = contig[len(wind_init):]
-		gc_count_init = wind_init.count('c')+wind_init.count('g')
-		gc_pers_init = float(gc_count_init)/len(wind_init)
-	else:
-		print 'I came here'
-		wind_curr = contig[0:median]
-		print len(wind_init)
-		print len(wind_curr)
-		if wind_curr==wind_init:
-			print 'Whaaaatttt???'
-		gc_count_curr = wind_curr.count('g')+wind_curr.count('c')
-		gc_pers_curr = float(gc_count_curr)/(len(wind_init))
-		#gc_pers_curr = float(gc_count_curr+gc_count_init)/(len(wind_init)+median)
-		print 'gc_pers_curr = ',gc_pers_curr
-		print 'gc_pers_init = ',gc_pers_init
-		if abs(gc_pers_curr - gc_pers_init)>0.01:
-			print 'I am here!'
-			windows.append([wind_init,gc_pers_init])
-			if len(wind_init)>5000:
-				f.write(str(len(wind_init))+' '+str(gc_pers_init)+'\n')
-				f.write(wind_init+(wind_curr)+'\n')
-			contig = contig[len(wind_curr):]
-			wind_init = (wind_curr)
-			gc_count_init = gc_count_curr
-		else:
-			print 'I was here!'
-			contig = contig[len(wind_curr):]
-			wind_init+=(wind_curr)
-			gc_count_init= gc_count_curr
-			#print 'len(wind_init) = ',len(wind_init)
-			
-			
-for i in windows:
-	print 'wind len = ',len(i[0]), 'gc  = ', i[1]
+wind_gc= []
+wind_gc_pos =[]
+for i in xrange(0,len(contig),median):
+	wind_gc.append(round((contig[i:i+median].count('g')+contig[i:i+median].count('c'))/float(median),2))
+print wind_gc
 
-f.close()
+curr_perc=0.0
+for i in xrange(len(wind_gc)):
+	if curr_perc ==0:
+		curr_perc = wind_gc[i]
+		wind_gc_pos.append([[i*median,(i+1)*median],wind_gc[i]])
+	else:
+		if abs(curr_perc-wind_gc[i])<0.01:
+			wind_gc_pos[-1][0][1] = (i+1)*median
+		else:
+			curr_perc = wind_gc[i]
+			wind_gc_pos.append([[i*median,(i+1)*median],wind_gc[i]])
+#print wind_gc_pos
+
+count = 0
+for i in wind_gc_pos:
+	if i[0][1]-i[0][0]> median*2:
+		count+=1
+		print i , (i[0][1]-i[0][0])/median
+print 'median = ',median
+print 'Number of different regions = ',len(wind_gc_pos)
+print 'Number of all nonoverlapping windows with lenght median = ',len(wind_gc)
+print 'Number of all windows with lenght greater than 2*median = ',count
