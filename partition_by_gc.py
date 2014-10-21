@@ -1,7 +1,11 @@
 f = open('/Users/dasha/PhD/data/chrom_files_hg38/chr10.fa','r')
 median = 5000
 contig = ''
+j=0
 for i in f:
+	j+=1
+	if j>200000:
+		break
 	contig+=i[:-1]
 f.close()
 contig = contig.lower()
@@ -41,7 +45,7 @@ while len(contig)>length*0.95:
 		#gc_pers_curr = float(gc_count_curr+gc_count_init)/(len(wind_init)+median)
 		print 'gc_pers_curr = ',gc_pers_curr
 		print 'gc_pers_init = ',gc_pers_init
-		if abs(gc_pers_curr - gc_pers_init)>0.1:
+		if abs(gc_pers_curr - gc_pers_init)>0.01:
 			print 'I am here!'
 			windows.append([wind_init,gc_pers_init])
 			if len(wind_init)>5000:

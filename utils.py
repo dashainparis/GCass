@@ -58,12 +58,13 @@ def get_chromosome_stats(fr, rf, config,historam_flag):
 		for i in range(len(bins)-1):
 			historam_file.write(str(round(bins[i])) + ' '+str(round(n[i],9))+'\n')
 		historam_file.close()
-		(mu, sigma) = norm.fit(normal_lengths)
-		logger.info('mu = '+str(mu))
-		logger.info('sigma = '+str(sigma))
-		a=mu-(12**0.5)*0.5*sigma
-		b=mu+(12**0.5)*0.5*sigma
-		p = 1/(b-a)
+		plt.close()
+		#(mu, sigma) = norm.fit(normal_lengths)
+		#logger.info('mu = '+str(mu))
+		#logger.info('sigma = '+str(sigma))
+		#a=mu-(12**0.5)*0.5*sigma
+		#b=mu+(12**0.5)*0.5*sigma
+		#p = 1/(b-a)
 		#f=open(config['working_dir']+'length.txt','w')
 		#f.write(str(fragment_lengths))
 		#f.close()
